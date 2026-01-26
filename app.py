@@ -5,7 +5,7 @@ import re
 import io
 
 st.set_page_config(page_title="Daily Evaluation Summarizer App", layout="wide")
-st.title("📊 Daily Evaluation Summary App")
+st.title("📊 Daily Evaluation Summarizer App")
 
 # -------------------------
 # Helpers
