@@ -5,6 +5,9 @@ import re
 import io
 
 st.set_page_config(page_title="Daily Evaluation Summarizer App", layout="wide")
+st.title("📊 Project DESA (Daily Evaluation Summarizer App)")
+
+st.set_page_config(page_subtitle="SDO Masbate City- SMME Section", layout="wide")
 st.title("📊 Daily Evaluation Summarizer App")
 
 # -------------------------
