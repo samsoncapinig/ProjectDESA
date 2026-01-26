@@ -6,6 +6,8 @@ import io
 
 st.set_page_config(page_title="Daily Evaluation Summarizer App", layout="wide")
 st.title("📊 Project DESA (Daily Evaluation Summarizer App)")
+st.caption("Project DESA (Daily Evaluation Summarizer App) is developed by the SMME Section of SDO Masbate City.")
+
 
 # -------------------------
 # Helpers
