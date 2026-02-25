@@ -92,19 +92,21 @@ def coerce_numeric(df: pd.DataFrame) -> pd.DataFrame:
 
 def find_category_columns(df: pd.DataFrame) -> Dict[str, List[str]]:
     """
-    Map each category to matching columns based on NEW TEMPLATE prefixes.
-    ALWAYS return all categories even if no column is found.
+    Flexible category detection:
+    - Does NOT depend on Q-number
+    - Matches based on keywords inside column headers
+    - Always returns ALL categories
     """
-    cols_by_cat = {cat: [] for cat in CATEGORY_PREFIXES.keys()}
+    cols_by_cat = {cat: [] for cat in CATEGORY_KEYWORDS.keys()}
 
     for col in df.columns:
-        col_u = str(col).strip()
-        for cat, prefix in CATEGORY_PREFIXES.items():
-            if col_u.startswith(prefix):
-                cols_by_cat[cat].append(col)
-                break
+        col_upper = str(col).upper()
 
-    # ✅ DO NOT remove empty categories
+        for category, keywords in CATEGORY_KEYWORDS.items():
+            if any(keyword in col_upper for keyword in keywords):
+                cols_by_cat[category].append(col)
+                break  # stop after first match
+
     return cols_by_cat
 
 
@@ -134,9 +136,8 @@ def compute_avg_for_columns(df: pd.DataFrame, columns: List[str]) -> float:
 
 def summarize_categories(df: pd.DataFrame, file_label: str) -> pd.DataFrame:
     """
-    Return a DataFrame indexed by category, with one column named file_label,
-    containing the average for that category.
-    If no columns exist for a category, value will be NaN.
+    Return all categories even if missing.
+    Missing categories will show NaN.
     """
     colmap = find_category_columns(df)
     stats = {}
@@ -146,7 +147,6 @@ def summarize_categories(df: pd.DataFrame, file_label: str) -> pd.DataFrame:
             avg = compute_avg_for_columns(df, cols)
             stats[cat] = {file_label: round(avg, 2) if pd.notna(avg) else float("nan")}
         else:
-            # ✅ Category exists but no matching columns
             stats[cat] = {file_label: float("nan")}
 
     return pd.DataFrame(stats).T
