@@ -41,12 +41,13 @@ st.caption(
 # ──────────────────────────────────────────────────────────────────────────────
 # Constants: New Template Category Prefixes (we match columns that START with these prefixes)
 # ──────────────────────────────────────────────────────────────────────────────
-CATEGORY_PREFIXES = {
-    "PROGRAM MANAGEMENT": "Q06_PROGRAM MANAGEMENT",
-    "ACCOMMODATION": "Q07_ACCOMMODATION",
-    "TRAINING VENUE": "Q08_TRAINING VENUE",
-    "FOOD/MEALS": "Q09_FOOD/MEALS",
-    "ADMINISTRATIVE ARRANGEMENTS": "Q10_ADMINISTRATIVE ARRANGEMENTS",
+# Flexible keyword-based matching
+CATEGORY_KEYWORDS = {
+    "PROGRAM MANAGEMENT": ["PROGRAM MANAGEMENT"],
+    "ACCOMMODATION": ["ACCOMMODATION"],
+    "TRAINING VENUE": ["TRAINING VENUE"],
+    "FOOD/MEALS": ["FOOD", "MEALS"],
+    "ADMINISTRATIVE ARRANGEMENTS": ["ADMINISTRATIVE ARRANGEMENTS"],
 }
 
 # Regex to detect session columns and capture DAY and LM numbers (tolerant to spaces/dashes).
