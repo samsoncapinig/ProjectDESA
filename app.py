@@ -91,17 +91,20 @@ def coerce_numeric(df: pd.DataFrame) -> pd.DataFrame:
 
 def find_category_columns(df: pd.DataFrame) -> Dict[str, List[str]]:
     """
-    Map each category to the list of matching columns based on NEW TEMPLATE prefixes.
+    Map each category to matching columns based on NEW TEMPLATE prefixes.
+    ALWAYS return all categories even if no column is found.
     """
     cols_by_cat = {cat: [] for cat in CATEGORY_PREFIXES.keys()}
+
     for col in df.columns:
         col_u = str(col).strip()
         for cat, prefix in CATEGORY_PREFIXES.items():
             if col_u.startswith(prefix):
                 cols_by_cat[cat].append(col)
                 break
-    # Remove empty categories
-    return {k: v for k, v in cols_by_cat.items() if v}
+
+    # ✅ DO NOT remove empty categories
+    return cols_by_cat
 
 
 def find_session_groups(df: pd.DataFrame) -> Dict[str, List[str]]:
@@ -132,14 +135,20 @@ def summarize_categories(df: pd.DataFrame, file_label: str) -> pd.DataFrame:
     """
     Return a DataFrame indexed by category, with one column named file_label,
     containing the average for that category.
+    If no columns exist for a category, value will be NaN.
     """
     colmap = find_category_columns(df)
     stats = {}
+
     for cat, cols in colmap.items():
-        avg = compute_avg_for_columns(df, cols)
-        if pd.notna(avg):
-            stats[cat] = {file_label: round(avg, 2)}
-    return pd.DataFrame(stats).T if stats else pd.DataFrame()
+        if cols:
+            avg = compute_avg_for_columns(df, cols)
+            stats[cat] = {file_label: round(avg, 2) if pd.notna(avg) else float("nan")}
+        else:
+            # ✅ Category exists but no matching columns
+            stats[cat] = {file_label: float("nan")}
+
+    return pd.DataFrame(stats).T
 
 
 def summarize_sessions(df: pd.DataFrame, file_label: str) -> pd.DataFrame:
